@@ -1,0 +1,73 @@
+@page "/books/create"
+@using Microsoft.EntityFrameworkCore
+@using BlazorWebAppMovies.Models
+@inject IDbContextFactory<BlazorWebAppMovies.Data.BlazorWebAppMoviesContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>Book</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="Book" OnValidSubmit="AddBook" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>
+            <div class="mb-3">
+                <label for="title" class="form-label">Title:</label> 
+                <InputText id="title" @bind-Value="Book.Title" class="form-control" /> 
+                <ValidationMessage For="() => Book.Title" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="summary" class="form-label">Summary:</label> 
+                <InputTextArea id="summary" @bind-Value="Book.Summary" class="form-control" /> 
+                <ValidationMessage For="() => Book.Summary" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="personalreview" class="form-label">Personal Review:</label> 
+                <InputTextArea id="personalreview" @bind-Value="Book.PersonalReview" class="form-control" /> 
+                <ValidationMessage For="() => Book.PersonalReview" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="author" class="form-label">Author:</label> 
+                <InputText id="author" @bind-Value="Book.Author" class="form-control" /> 
+                <ValidationMessage For="() => Book.Author" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="publicationdate" class="form-label">Publication Date:</label> 
+                <InputDate id="publicationdate" @bind-Value="Book.PublicationDate" class="form-control" /> 
+                <ValidationMessage For="() => Book.PublicationDate" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="genre" class="form-label">Genre:</label> 
+                <InputText id="genre" @bind-Value="Book.Genre" class="form-control" /> 
+                <ValidationMessage For="() => Book.Genre" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="price" class="form-label">Price:</label> 
+                <InputNumber id="price" @bind-Value="Book.Price" class="form-control" /> 
+                <ValidationMessage For="() => Book.Price" class="text-danger" /> 
+            </div>
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/books">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private Book Book { get; set; } = new();
+
+    private async Task AddBook()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Book.Add(Book);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/books");
+    }
+}
